@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  backend:
+    container_name: "kpd-backend"
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    image: fokinax/kpd-backend
+    restart: always
+    ports:
+      - "4000:3000"
+    env_file: .env
+    networks:
+      - internal
+
+  frontend:
+    container_name: "kpd-frontend"
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    image: fokinax/kpd-frontend
+    restart: always
+    ports:
+      - "8888:80"
+    networks:
+      - external
+
+  db:
+    container_name: "kpd-postgres"
+    image: postgres:alpine
+    restart: always
+    env_file: .env
+    networks:
+      - internal
+    ports:
+      - ":5432"
+    volumes:
+      - pg_data:/data/postgress
+
+networks:
+  internal:
+  external:
+
+volumes:
+  pg_data:
